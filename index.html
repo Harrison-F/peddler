@@ -772,13 +772,14 @@
     function renderProducts() {
       const grid = document.getElementById('product-grid');
       
-      let filtered = allProducts;
+      let filtered = allProducts.filter(p => getProductImage(p));
       if (activeFilter !== 'all') {
-        filtered = allProducts.filter(p => getCategory(p) === activeFilter);
+        filtered = filtered.filter(p => getCategory(p) === activeFilter);
       }
 
-      const merchants = new Set(allProducts.map(p => p._pubkey));
-      document.getElementById('listing-count').textContent = allProducts.length;
+      const withImages = allProducts.filter(p => getProductImage(p));
+      const merchants = new Set(withImages.map(p => p._pubkey));
+      document.getElementById('listing-count').textContent = withImages.length;
       document.getElementById('merchant-count').textContent = merchants.size;
 
       if (filtered.length === 0) {
