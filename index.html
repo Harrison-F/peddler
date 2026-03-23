@@ -490,7 +490,7 @@
     const SHIPPING_US = 2000;
     const SHIPPING_INT = 5000;
     // Backend API for invoice generation (proxied through our server)
-    const API_BASE = '';
+    const API_BASE = 'https://harrisons-macbook-air.tail323ae0.ts.net/peddler-api';
 
     let quantity = 1;
 
@@ -555,7 +555,7 @@
 
       try {
         // Request invoice from backend
-        const res = await fetch('/api/invoice', {
+        const res = await fetch(API_BASE + '/api/invoice', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -600,7 +600,7 @@
     async function pollPayment(hash) {
       const check = async () => {
         try {
-          const res = await fetch(`/api/invoice/${hash}`);
+          const res = await fetch(`${API_BASE}/api/invoice/${hash}`);
           const data = await res.json();
           if (data.paid) {
             showSuccess();
