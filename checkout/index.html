@@ -208,12 +208,14 @@
       display: flex;
       gap: 12px;
       margin-bottom: 12px;
+      overflow: hidden;
     }
 
     .form-row:last-child { margin-bottom: 0; }
 
     .form-group {
       flex: 1;
+      min-width: 0;
       display: flex;
       flex-direction: column;
       gap: 4px;
@@ -235,6 +237,8 @@
       font-size: 0.9em;
       outline: none;
       font-family: inherit;
+      width: 100%;
+      box-sizing: border-box;
     }
 
     .form-group input:focus, .form-group select:focus {
@@ -665,7 +669,7 @@
               <label>City</label>
               <input type="text" id="ship-city" placeholder="City" required>
             </div>
-            <div class="form-group" style="flex:0.5">
+            <div class="form-group">
               <label>State</label>
               <input type="text" id="ship-state" placeholder="NY">
             </div>
