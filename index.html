@@ -657,11 +657,7 @@
           limit: 200,
         }]));
 
-        // Subscribe to NIP-99 classifieds (kind 30402)
-        ws.send(JSON.stringify(['REQ', subId + '-classifieds', {
-          kinds: [30402],
-          limit: 200,
-        }]));
+        // NIP-99 classifieds filtered out — no structured checkout data
       };
 
       ws.onmessage = (msg) => {
@@ -721,33 +717,6 @@
             allProducts.push(product);
           }
         } catch (e) {}
-      } else if (event.kind === 30402) {
-        // Classified listing
-        const product = {
-          _pubkey: event.pubkey,
-          _kind: 30402,
-          _id: getTag(event, 'd'),
-          _tags: event.tags,
-          _created: event.created_at,
-          name: getTag(event, 'title') || getTag(event, 'subject') || 'Untitled',
-          description: event.content,
-          images: getAllTags(event, 'image'),
-          price: parsePrice(getTag(event, 'price')),
-          currency: 'sats',
-        };
-
-        // Get image from tags
-        const imgTag = event.tags.find(t => t[0] === 'image');
-        if (imgTag) product.images = [imgTag[1]];
-
-        const existing = allProducts.findIndex(p => p._id === product._id && p._pubkey === product._pubkey && p._kind === 30402);
-        if (existing >= 0) {
-          if (product._created > allProducts[existing]._created) {
-            allProducts[existing] = product;
-          }
-        } else {
-          allProducts.push(product);
-        }
       }
     }
 
@@ -852,14 +821,6 @@
       }).join('');
     }
 
-    // Our pubkey — products from this key have checkout pages
-    const OUR_PUBKEY = '65e47b6367d94bb526163a293811ca5a83f4a50c605de64bb47127ffa10ac67c';
-
-    // Map our product IDs to checkout URLs
-    const CHECKOUT_URLS = {
-      'fl-sticker-01': 'checkout/',
-    };
-
     function showProduct(id, pubkey, kind) {
       const product = allProducts.find(p => p._id === id && p._pubkey === pubkey && p._kind === kind);
       if (!product) return;
@@ -867,11 +828,7 @@
       const img = getProductImage(product);
       const stall = product.stall_id ? allStalls[product.stall_id] : null;
       const merchantName = stall ? stall.name : npubShort(product._pubkey);
-
-      // Check if this product has a checkout page
-      const isOurs = product._pubkey === OUR_PUBKEY;
-      const checkoutUrl = CHECKOUT_URLS[product._id];
-      const hasCheckout = isOurs && checkoutUrl;
+      const checkoutUrl = `checkout/?product=${encodeURIComponent(product._id || product.id)}&merchant=${product._pubkey}`;
 
       const modal = document.getElementById('modal-content');
       modal.innerHTML = `
@@ -890,29 +847,18 @@
             </div>
             <div class="modal-meta-row">
               <span class="modal-meta-label">Protocol</span>
-              <span class="modal-meta-value">${kind === 30018 ? 'NIP-15 (Product)' : 'NIP-99 (Classified)'}</span>
+              <span class="modal-meta-value">NIP-15</span>
             </div>
             <div class="modal-meta-row">
               <span class="modal-meta-label">Payment</span>
               <span class="modal-meta-value">⚡ Lightning Network</span>
             </div>
           </div>
-          ${hasCheckout
-            ? `<a href="${checkoutUrl}" class="buy-btn" target="_blank">⚡ Buy with Lightning</a>`
-            : `<button class="buy-btn buy-btn-dm" onclick="copyNpub('${product._pubkey}')">📩 Contact Merchant to Buy</button>`
-          }
+          <a href="${checkoutUrl}" class="buy-btn">⚡ Buy with Lightning</a>
         </div>
       `;
 
       document.getElementById('modal-overlay').classList.add('active');
-    }
-
-    function copyNpub(pubkey) {
-      // Convert hex to a note for now, just copy hex
-      navigator.clipboard.writeText(pubkey).then(() => {
-        const btn = document.querySelector('.buy-btn-dm');
-        if (btn) { btn.textContent = '✅ Merchant pubkey copied!'; setTimeout(() => btn.textContent = '📩 Contact Merchant to Buy', 2000); }
-      });
     }
 
     function closeModal() {

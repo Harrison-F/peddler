@@ -3,30 +3,37 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Freedom Lab NYC — Store</title>
+  <title>Checkout — Peddler</title>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
     :root {
-      --bg: #0a0a0a;
-      --surface: #141414;
-      --border: #2a2a2a;
-      --text: #e8e8e8;
-      --text-dim: #888;
+      --bg: #09090b;
+      --surface: #18181b;
+      --surface-hover: #1e1e22;
+      --border: #27272a;
+      --border-hover: #3f3f46;
+      --text: #fafafa;
+      --text-secondary: #a1a1aa;
+      --text-dim: #71717a;
       --accent: #f7931a;
-      --accent-dim: rgba(247, 147, 26, 0.15);
+      --accent-glow: rgba(247, 147, 26, 0.12);
       --green: #22c55e;
-      --green-dim: rgba(34, 197, 94, 0.15);
+      --green-glow: rgba(34, 197, 94, 0.12);
+      --red: #ef4444;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-family: 'Inter', -apple-system, sans-serif;
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
+      -webkit-font-smoothing: antialiased;
     }
 
     .container {
@@ -36,102 +43,128 @@
     }
 
     .header {
-      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       margin-bottom: 32px;
     }
 
-    .header h1 {
-      font-size: 1.5em;
-      font-weight: 700;
-      margin-bottom: 4px;
+    .header a {
+      color: var(--text);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
-    .header p {
-      color: var(--text-dim);
-      font-size: 0.85em;
+    .header .logo-text { font-weight: 800; font-size: 1.1em; }
+    .header .back { font-size: 0.85em; color: var(--text-secondary); text-decoration: none; }
+    .header .back:hover { color: var(--text); }
+
+    /* Loading */
+    .loading-state {
+      text-align: center;
+      padding: 80px 24px;
     }
 
+    .loading-spinner {
+      display: inline-block;
+      width: 28px;
+      height: 28px;
+      border: 2px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-bottom: 16px;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .loading-state p { color: var(--text-dim); font-size: 0.9em; }
+
+    .error-state {
+      text-align: center;
+      padding: 60px 24px;
+    }
+
+    .error-state .icon { font-size: 2.5em; margin-bottom: 16px; }
+    .error-state h3 { color: var(--text-secondary); margin-bottom: 8px; }
+    .error-state p { color: var(--text-dim); font-size: 0.9em; margin-bottom: 20px; }
+    .error-state a { color: var(--accent); text-decoration: none; }
+
+    /* Product card */
     .product-card {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 16px;
       overflow: hidden;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
     }
 
     .product-image {
       width: 100%;
-      aspect-ratio: 1;
+      max-height: 280px;
       object-fit: contain;
-      background: #1a1a1a;
-      padding: 24px;
+      background: #111;
+      padding: 20px;
     }
 
     .product-info {
       padding: 20px;
     }
 
+    .product-merchant {
+      font-size: 0.78em;
+      color: var(--text-dim);
+      margin-bottom: 6px;
+    }
+
     .product-info h2 {
       font-size: 1.2em;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
+      letter-spacing: -0.01em;
     }
 
     .product-info .description {
-      color: var(--text-dim);
-      font-size: 0.9em;
+      color: var(--text-secondary);
+      font-size: 0.88em;
       line-height: 1.5;
       margin-bottom: 16px;
     }
 
-    .product-info .price {
+    .price-line {
       display: flex;
       align-items: baseline;
       gap: 8px;
     }
 
-    .price .sats {
+    .price-line .sats {
       font-size: 1.4em;
       font-weight: 700;
       color: var(--accent);
     }
 
-    .price .usd {
+    .price-line .currency {
       color: var(--text-dim);
       font-size: 0.85em;
     }
 
-    .specs {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-top: 12px;
-    }
-
-    .spec {
-      background: var(--accent-dim);
-      color: var(--accent);
-      padding: 4px 10px;
-      border-radius: 12px;
-      font-size: 0.75em;
-      font-weight: 500;
-    }
-
-    /* Quantity selector */
-    .quantity-section {
+    /* Quantity */
+    .section-card {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 12px;
       padding: 16px 20px;
       margin-bottom: 16px;
+    }
+
+    .qty-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
     }
 
-    .quantity-section label {
-      font-weight: 600;
-      font-size: 0.9em;
-    }
+    .qty-row label { font-weight: 600; font-size: 0.9em; }
 
     .qty-controls {
       display: flex;
@@ -163,15 +196,7 @@
     }
 
     /* Shipping form */
-    .shipping-section {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 20px;
-      margin-bottom: 16px;
-    }
-
-    .shipping-section h3 {
+    .section-card h3 {
       font-size: 0.95em;
       margin-bottom: 16px;
       display: flex;
@@ -209,31 +234,45 @@
       color: var(--text);
       font-size: 0.9em;
       outline: none;
+      font-family: inherit;
     }
 
     .form-group input:focus, .form-group select:focus {
       border-color: var(--accent);
     }
 
-    /* Order summary */
-    .summary {
-      background: var(--surface);
+    /* Shipping zone selector */
+    .shipping-zones {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .zone-option {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
       border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 20px;
-      margin-bottom: 24px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: border-color 0.15s;
     }
 
-    .summary h3 {
-      font-size: 0.95em;
-      margin-bottom: 12px;
-    }
+    .zone-option:hover { border-color: var(--border-hover); }
+    .zone-option.selected { border-color: var(--accent); background: var(--accent-glow); }
 
+    .zone-option .zone-name { font-size: 0.88em; font-weight: 500; }
+    .zone-option .zone-cost { font-size: 0.85em; color: var(--accent); font-weight: 600; }
+
+    /* Summary */
     .summary-row {
       display: flex;
       justify-content: space-between;
       padding: 6px 0;
       font-size: 0.9em;
+      color: var(--text-secondary);
     }
 
     .summary-row.total {
@@ -242,14 +281,13 @@
       padding-top: 12px;
       font-weight: 700;
       font-size: 1em;
+      color: var(--text);
     }
 
-    .summary-row.total .sats {
-      color: var(--accent);
-    }
+    .summary-row.total .value { color: var(--accent); }
 
-    /* Pay button */
-    .pay-btn {
+    /* Order button */
+    .order-btn {
       width: 100%;
       padding: 16px;
       background: var(--accent);
@@ -259,13 +297,29 @@
       font-size: 1.05em;
       font-weight: 700;
       cursor: pointer;
-      transition: opacity 0.2s;
+      transition: opacity 0.15s;
+      font-family: inherit;
+      margin-top: 8px;
     }
 
-    .pay-btn:hover { opacity: 0.9; }
-    .pay-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .order-btn:hover { opacity: 0.9; }
+    .order-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-    /* Payment modal */
+    /* Order sent state */
+    .order-sent {
+      background: var(--green-glow);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      border-radius: 12px;
+      padding: 32px 24px;
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .order-sent .icon { font-size: 2.5em; margin-bottom: 12px; }
+    .order-sent h3 { color: var(--green); margin-bottom: 8px; }
+    .order-sent p { color: var(--text-secondary); font-size: 0.9em; line-height: 1.5; }
+
+    /* Payment overlay */
     .payment-overlay {
       display: none;
       position: fixed;
@@ -288,9 +342,7 @@
       text-align: center;
     }
 
-    .payment-modal h3 {
-      margin-bottom: 8px;
-    }
+    .payment-modal h3 { margin-bottom: 8px; }
 
     .payment-modal .amount {
       font-size: 1.8em;
@@ -307,9 +359,7 @@
       margin-bottom: 16px;
     }
 
-    .qr-container canvas {
-      display: block;
-    }
+    .qr-container canvas { display: block; }
 
     .invoice-text {
       background: var(--bg);
@@ -336,6 +386,7 @@
       font-size: 0.85em;
       cursor: pointer;
       margin-bottom: 16px;
+      font-family: inherit;
     }
 
     .status-waiting {
@@ -349,21 +400,6 @@
       50% { opacity: 0.5; }
     }
 
-    /* Success */
-    .success-modal {
-      text-align: center;
-    }
-
-    .success-modal .checkmark {
-      font-size: 3em;
-      margin-bottom: 12px;
-    }
-
-    .success-modal h3 {
-      color: var(--green);
-      margin-bottom: 8px;
-    }
-
     /* Nostr badge */
     .nostr-badge {
       text-align: center;
@@ -373,237 +409,416 @@
       font-size: 0.75em;
     }
 
-    .nostr-badge a {
-      color: var(--accent);
-      text-decoration: none;
+    .nostr-badge a { color: var(--accent); text-decoration: none; }
+
+    @media (max-width: 640px) {
+      .product-image { max-height: 200px; }
     }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="header">
-      <h1>⚡ Freedom Lab NYC</h1>
-      <p>Freedom tech education & community</p>
+      <a href="/"><span style="font-size:1.2em">⚡</span> <span class="logo-text">Peddler</span></a>
+      <a href="/" class="back">← Marketplace</a>
     </div>
 
-    <div class="product-card">
-      <img class="product-image" src="/sticker.png" alt="Freedom Lab NYC Sticker">
-      <div class="product-info">
-        <h2>Freedom Lab NYC Sticker</h2>
-        <p class="description">Pixel art Statue of Liberty torch sticker. Die-cut, weatherproof vinyl. ~3 inches. Rep freedom tech in NYC.</p>
-        <div class="price">
-          <span class="sats" id="unit-price">5,000 sats</span>
-          <span class="usd" id="unit-usd"></span>
-        </div>
-        <div class="specs">
-          <span class="spec">Weatherproof</span>
-          <span class="spec">Die-cut</span>
-          <span class="spec">~3 inches</span>
-        </div>
+    <div id="checkout-content">
+      <div class="loading-state">
+        <div class="loading-spinner"></div>
+        <p>Loading product from Nostr relays...</p>
       </div>
     </div>
-
-    <div class="quantity-section">
-      <label>Quantity</label>
-      <div class="qty-controls">
-        <button class="qty-btn" onclick="changeQty(-1)">−</button>
-        <span id="qty-display">1</span>
-        <button class="qty-btn" onclick="changeQty(1)">+</button>
-      </div>
-    </div>
-
-    <div class="shipping-section">
-      <h3>📦 Shipping</h3>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Name</label>
-          <input type="text" id="ship-name" placeholder="Full name" required>
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Address</label>
-          <input type="text" id="ship-address" placeholder="Street address" required>
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>City</label>
-          <input type="text" id="ship-city" placeholder="City" required>
-        </div>
-        <div class="form-group" style="flex:0.5">
-          <label>State</label>
-          <input type="text" id="ship-state" placeholder="NY" required>
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>ZIP</label>
-          <input type="text" id="ship-zip" placeholder="10001" required>
-        </div>
-        <div class="form-group">
-          <label>Country</label>
-          <select id="ship-country">
-            <option value="US" selected>United States</option>
-            <option value="INT">International</option>
-          </select>
-        </div>
-      </div>
-    </div>
-
-    <div class="summary">
-      <h3>Order Summary</h3>
-      <div class="summary-row">
-        <span>Sticker × <span id="sum-qty">1</span></span>
-        <span id="sum-subtotal">5,000 sats</span>
-      </div>
-      <div class="summary-row">
-        <span>Shipping (<span id="sum-ship-type">US Standard</span>)</span>
-        <span id="sum-shipping">2,000 sats</span>
-      </div>
-      <div class="summary-row total">
-        <span>Total</span>
-        <span class="sats" id="sum-total">7,000 sats</span>
-      </div>
-    </div>
-
-    <button class="pay-btn" onclick="startPayment()">⚡ Pay with Lightning</button>
 
     <div class="nostr-badge">
-      Powered by Nostr · NIP-15 · 
-      <a href="https://shopstr.store/listing/Freedom-Lab-NYC-Sticker" target="_blank">Also on Shopstr</a>
+      Powered by Nostr · NIP-15 · Lightning Network<br>
+      <a href="https://freedomlab.nyc">Freedom Lab NYC</a>
     </div>
   </div>
 
   <!-- Payment overlay -->
   <div class="payment-overlay" id="payment-overlay">
-    <div class="payment-modal" id="payment-content">
-      <!-- Filled dynamically -->
-    </div>
+    <div class="payment-modal" id="payment-content"></div>
   </div>
 
-  <!-- QR code library -->
   <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
 
   <script>
-    const UNIT_PRICE = 5000;
-    const SHIPPING_US = 2000;
-    const SHIPPING_INT = 5000;
-    // Backend API for invoice generation (proxied through our server)
-    const API_BASE = 'https://harrisons-macbook-air.tail323ae0.ts.net/peddler-api';
+    const RELAYS = [
+      'wss://relay.damus.io',
+      'wss://nos.lol',
+      'wss://relay.primal.net',
+      'wss://relay.nostr.band',
+    ];
 
+    // Our pubkey — for products we own, we can generate invoices directly
+    const OUR_PUBKEY = '65e47b6367d94bb526163a293811ca5a83f4a50c605de64bb47127ffa10ac67c';
+    const OUR_API = 'https://harrisons-macbook-air.tail323ae0.ts.net/peddler-api';
+
+    // Parse URL params
+    const params = new URLSearchParams(window.location.search);
+    const productId = params.get('product');
+    const merchantPubkey = params.get('merchant');
+
+    if (!productId || !merchantPubkey) {
+      showError('Missing product info', 'This checkout page needs a product ID and merchant. Go back to the marketplace to find products.', '/');
+    }
+
+    let product = null;
+    let stall = null;
     let quantity = 1;
+    let selectedZone = null;
+
+    // Fetch product and stall from relays
+    function fetchProduct() {
+      let foundProduct = false;
+      let foundStall = false;
+      let stallId = null;
+      let relaysChecked = 0;
+
+      RELAYS.forEach(url => {
+        const ws = new WebSocket(url);
+        const subId = 'checkout-' + Math.random().toString(36).slice(2, 8);
+
+        ws.onopen = () => {
+          // Fetch the specific product
+          ws.send(JSON.stringify(['REQ', subId + '-product', {
+            kinds: [30018],
+            authors: [merchantPubkey],
+            '#d': [productId],
+            limit: 1,
+          }]));
+
+          // Also fetch all stalls from this merchant
+          ws.send(JSON.stringify(['REQ', subId + '-stalls', {
+            kinds: [30017],
+            authors: [merchantPubkey],
+            limit: 10,
+          }]));
+        };
+
+        ws.onmessage = (msg) => {
+          try {
+            const data = JSON.parse(msg.data);
+            if (data[0] === 'EVENT') {
+              const event = data[2];
+              if (event.kind === 30018 && !foundProduct) {
+                const p = JSON.parse(event.content);
+                p._pubkey = event.pubkey;
+                p._kind = 30018;
+                p._id = productId;
+                p._tags = event.tags;
+                product = p;
+                stallId = p.stall_id;
+                foundProduct = true;
+              } else if (event.kind === 30017) {
+                const s = JSON.parse(event.content);
+                s._pubkey = event.pubkey;
+                const sId = event.tags.find(t => t[0] === 'd');
+                s._id = sId ? sId[1] : s.id;
+                if (stallId && s._id === stallId) {
+                  stall = s;
+                  foundStall = true;
+                } else if (!stallId) {
+                  // Store for later matching
+                  if (!stall) stall = s;
+                }
+              }
+            } else if (data[0] === 'EOSE') {
+              relaysChecked++;
+              if (foundProduct) {
+                // Try to match stall if not yet matched
+                if (stallId && !foundStall) {
+                  // May come from another relay
+                }
+                renderCheckout();
+              }
+              if (relaysChecked >= RELAYS.length && !foundProduct) {
+                showError('Product not found', 'Could not find this product on Nostr relays. It may have been removed.', '/');
+              }
+              ws.close();
+            }
+          } catch (e) {}
+        };
+
+        ws.onerror = () => { relaysChecked++; };
+      });
+
+      // Timeout
+      setTimeout(() => {
+        if (!product) {
+          showError('Timed out', 'Could not reach Nostr relays. Please try again.', '/');
+        }
+      }, 15000);
+    }
+
+    function showError(title, message, linkHref) {
+      document.getElementById('checkout-content').innerHTML = `
+        <div class="error-state">
+          <div class="icon">😕</div>
+          <h3>${title}</h3>
+          <p>${message}</p>
+          ${linkHref ? `<a href="${linkHref}">← Back to Marketplace</a>` : ''}
+        </div>
+      `;
+    }
+
+    function getProductImage() {
+      if (product.images && product.images.length > 0) return product.images[0];
+      if (product.image) return product.image;
+      return null;
+    }
+
+    function formatSats(amount) {
+      return Number(amount).toLocaleString() + ' sats';
+    }
+
+    function getCurrency() {
+      return (product.currency || 'sat').toUpperCase();
+    }
+
+    function isSats() {
+      const c = getCurrency();
+      return c === 'SAT' || c === 'SATS' || c === 'MSAT';
+    }
+
+    function getShippingZones() {
+      if (!stall || !stall.shipping) return [];
+      return stall.shipping;
+    }
+
+    function renderCheckout() {
+      if (!product) return;
+
+      const img = getProductImage();
+      const zones = getShippingZones();
+      const merchantName = stall ? stall.name : merchantPubkey.slice(0, 12) + '…';
+      const isOurs = merchantPubkey === OUR_PUBKEY;
+
+      // Auto-select first zone
+      if (zones.length > 0 && !selectedZone) {
+        selectedZone = zones[0];
+      }
+
+      const priceDisplay = isSats()
+        ? `<span class="sats">${formatSats(product.price)}</span>`
+        : `<span class="sats">${product.price}</span> <span class="currency">${getCurrency()}</span>`;
+
+      const zonesHtml = zones.length > 0 ? `
+        <div class="section-card">
+          <h3>🚚 Shipping Zone</h3>
+          <div class="shipping-zones">
+            ${zones.map((z, i) => `
+              <div class="zone-option ${selectedZone && selectedZone.id === z.id ? 'selected' : ''}" onclick="selectZone(${i})">
+                <span class="zone-name">${z.name || z.id || 'Zone ' + (i+1)}</span>
+                <span class="zone-cost">${isSats() ? formatSats(z.cost || 0) : (z.cost || 0) + ' ' + getCurrency()}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      ` : '';
+
+      const subtotal = product.price * quantity;
+      const shippingCost = selectedZone ? (selectedZone.cost || 0) : 0;
+      const total = subtotal + shippingCost;
+
+      document.getElementById('checkout-content').innerHTML = `
+        <div class="product-card">
+          ${img ? `<img class="product-image" src="${img}" alt="${product.name || ''}" onerror="this.style.display='none'">` : ''}
+          <div class="product-info">
+            <div class="product-merchant">👤 ${merchantName}</div>
+            <h2>${product.name || 'Untitled'}</h2>
+            <p class="description">${product.description || ''}</p>
+            <div class="price-line">${priceDisplay}</div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div class="qty-row">
+            <label>Quantity</label>
+            <div class="qty-controls">
+              <button class="qty-btn" onclick="changeQty(-1)">−</button>
+              <span id="qty-display">${quantity}</span>
+              <button class="qty-btn" onclick="changeQty(1)">+</button>
+            </div>
+          </div>
+        </div>
+
+        ${zonesHtml}
+
+        <div class="section-card">
+          <h3>📦 Shipping Address</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Full Name</label>
+              <input type="text" id="ship-name" placeholder="Your name" required>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Address</label>
+              <input type="text" id="ship-address" placeholder="Street address" required>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>City</label>
+              <input type="text" id="ship-city" placeholder="City" required>
+            </div>
+            <div class="form-group" style="flex:0.5">
+              <label>State</label>
+              <input type="text" id="ship-state" placeholder="NY">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>ZIP / Postal Code</label>
+              <input type="text" id="ship-zip" placeholder="10001" required>
+            </div>
+            <div class="form-group">
+              <label>Country</label>
+              <input type="text" id="ship-country" placeholder="United States" value="United States">
+            </div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <h3>Order Summary</h3>
+          <div class="summary-row">
+            <span>${product.name} × ${quantity}</span>
+            <span>${isSats() ? formatSats(subtotal) : subtotal + ' ' + getCurrency()}</span>
+          </div>
+          ${selectedZone ? `
+          <div class="summary-row">
+            <span>Shipping (${selectedZone.name || 'Standard'})</span>
+            <span>${isSats() ? formatSats(shippingCost) : shippingCost + ' ' + getCurrency()}</span>
+          </div>
+          ` : ''}
+          <div class="summary-row total">
+            <span>Total</span>
+            <span class="value">${isSats() ? formatSats(total) : total + ' ' + getCurrency()}</span>
+          </div>
+        </div>
+
+        <button class="order-btn" onclick="placeOrder()" id="order-btn">
+          ⚡ ${isOurs ? 'Pay with Lightning' : 'Place Order'}
+        </button>
+
+        <div id="order-status"></div>
+      `;
+    }
 
     function changeQty(delta) {
       quantity = Math.max(1, Math.min(20, quantity + delta));
-      updateSummary();
+      renderCheckout();
     }
 
-    function getShippingCost() {
-      return document.getElementById('ship-country').value === 'US' ? SHIPPING_US : SHIPPING_INT;
+    function selectZone(index) {
+      const zones = getShippingZones();
+      selectedZone = zones[index];
+      renderCheckout();
     }
-
-    function fmt(sats) {
-      return sats.toLocaleString() + ' sats';
-    }
-
-    function updateSummary() {
-      const subtotal = UNIT_PRICE * quantity;
-      const shipping = getShippingCost();
-      const total = subtotal + shipping;
-      const shipType = document.getElementById('ship-country').value === 'US' ? 'US Standard' : 'International';
-
-      document.getElementById('qty-display').textContent = quantity;
-      document.getElementById('sum-qty').textContent = quantity;
-      document.getElementById('sum-subtotal').textContent = fmt(subtotal);
-      document.getElementById('sum-shipping').textContent = fmt(shipping);
-      document.getElementById('sum-ship-type').textContent = shipType;
-      document.getElementById('sum-total').textContent = fmt(total);
-    }
-
-    document.getElementById('ship-country').addEventListener('change', updateSummary);
 
     function validateForm() {
-      const fields = ['ship-name', 'ship-address', 'ship-city', 'ship-state', 'ship-zip'];
+      const fields = ['ship-name', 'ship-address', 'ship-city', 'ship-zip'];
       for (const id of fields) {
-        if (!document.getElementById(id).value.trim()) {
-          document.getElementById(id).focus();
+        const el = document.getElementById(id);
+        if (el && !el.value.trim()) {
+          el.focus();
           return false;
         }
       }
       return true;
     }
 
-    async function startPayment() {
+    function getShippingData() {
+      return {
+        name: document.getElementById('ship-name')?.value || '',
+        address: document.getElementById('ship-address')?.value || '',
+        city: document.getElementById('ship-city')?.value || '',
+        state: document.getElementById('ship-state')?.value || '',
+        zip: document.getElementById('ship-zip')?.value || '',
+        country: document.getElementById('ship-country')?.value || '',
+      };
+    }
+
+    async function placeOrder() {
       if (!validateForm()) return;
 
-      const total = UNIT_PRICE * quantity + getShippingCost();
-      const shipping = {
-        name: document.getElementById('ship-name').value,
-        address: document.getElementById('ship-address').value,
-        city: document.getElementById('ship-city').value,
-        state: document.getElementById('ship-state').value,
-        zip: document.getElementById('ship-zip').value,
-        country: document.getElementById('ship-country').value,
-      };
+      const btn = document.getElementById('order-btn');
+      btn.disabled = true;
+      btn.textContent = '⏳ Processing...';
 
-      // Show loading
-      const overlay = document.getElementById('payment-overlay');
-      const content = document.getElementById('payment-content');
-      overlay.classList.add('active');
-      content.innerHTML = '<p class="status-waiting">⚡ Generating invoice...</p>';
+      const isOurs = merchantPubkey === OUR_PUBKEY;
+      const shipping = getShippingData();
+      const shippingCost = selectedZone ? (selectedZone.cost || 0) : 0;
+      const total = product.price * quantity + shippingCost;
 
-      try {
-        // Request invoice from backend
-        const res = await fetch(API_BASE + '/api/invoice', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            product_id: 'fl-sticker-01',
-            quantity,
-            amount_sats: total,
-            shipping,
-          }),
-        });
+      if (isOurs) {
+        // Direct checkout — generate invoice via our API
+        try {
+          const res = await fetch(OUR_API + '/api/invoice', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              product_id: productId,
+              quantity,
+              amount_sats: total,
+              shipping,
+            }),
+          });
 
-        const data = await res.json();
-        if (!data.invoice) throw new Error(data.error || 'Failed to generate invoice');
+          const data = await res.json();
+          if (!data.invoice) throw new Error(data.error || 'Failed to generate invoice');
 
-        // Show QR code
-        content.innerHTML = `
-          <h3>Pay with Lightning</h3>
-          <div class="amount">${fmt(total)}</div>
-          <div class="qr-container">
-            <canvas id="qr-canvas"></canvas>
-          </div>
-          <div class="invoice-text" onclick="copyInvoice()" title="Click to copy">${data.invoice}</div>
-          <button class="copy-btn" onclick="copyInvoice()">📋 Copy Invoice</button>
-          <p class="status-waiting">Waiting for payment...</p>
-        `;
-
-        // Generate QR
-        QRCode.toCanvas(document.getElementById('qr-canvas'), data.invoice.toUpperCase(), {
-          width: 280,
-          margin: 0,
-          color: { dark: '#000', light: '#fff' },
-        });
-
-        // Poll for payment
-        pollPayment(data.payment_hash);
-
-      } catch (e) {
-        content.innerHTML = `<p style="color:#f85149">Error: ${e.message}</p>
-          <button class="copy-btn" onclick="document.getElementById('payment-overlay').classList.remove('active')">Close</button>`;
+          showPayment(data.invoice, data.payment_hash, total);
+        } catch (e) {
+          btn.disabled = false;
+          btn.textContent = '⚡ Pay with Lightning';
+          document.getElementById('order-status').innerHTML = `
+            <p style="color:var(--red);text-align:center;margin-top:12px;font-size:0.9em;">Error: ${e.message}</p>
+          `;
+        }
+      } else {
+        // Third-party merchant — show order confirmation
+        // In future: send NIP-15 order DM to merchant
+        showOrderSent(shipping, total);
       }
     }
 
-    async function pollPayment(hash) {
+    function showPayment(invoice, paymentHash, totalSats) {
+      const overlay = document.getElementById('payment-overlay');
+      const content = document.getElementById('payment-content');
+      overlay.classList.add('active');
+
+      content.innerHTML = `
+        <h3>Pay with Lightning</h3>
+        <div class="amount">${formatSats(totalSats)}</div>
+        <div class="qr-container">
+          <canvas id="qr-canvas"></canvas>
+        </div>
+        <div class="invoice-text" onclick="copyInvoice('${invoice}')" title="Click to copy">${invoice}</div>
+        <button class="copy-btn" onclick="copyInvoice('${invoice}')">📋 Copy Invoice</button>
+        <p class="status-waiting">Waiting for payment...</p>
+      `;
+
+      QRCode.toCanvas(document.getElementById('qr-canvas'), invoice.toUpperCase(), {
+        width: 280, margin: 0,
+        color: { dark: '#000', light: '#fff' },
+      });
+
+      // Poll for payment
       const check = async () => {
         try {
-          const res = await fetch(`${API_BASE}/api/invoice/${hash}`);
+          const res = await fetch(`${OUR_API}/api/invoice/${paymentHash}`);
           const data = await res.json();
           if (data.paid) {
-            showSuccess();
+            content.innerHTML = `
+              <div style="font-size:3em;margin-bottom:12px">✅</div>
+              <h3 style="color:var(--green)">Payment Received!</h3>
+              <p style="color:var(--text-secondary);margin-top:8px">Your order is confirmed. Thank you for supporting freedom tech.</p>
+              <button class="copy-btn" style="margin-top:20px" onclick="window.location='/'">Back to Marketplace</button>
+            `;
             return;
           }
         } catch (e) {}
@@ -612,28 +827,35 @@
       check();
     }
 
-    function showSuccess() {
-      const content = document.getElementById('payment-content');
-      content.innerHTML = `
-        <div class="success-modal">
-          <div class="checkmark">✅</div>
-          <h3>Payment Received!</h3>
-          <p style="color:var(--text-dim);margin-top:8px;">Your Freedom Lab NYC stickers are on the way.<br>Thank you for supporting freedom tech.</p>
-          <button class="copy-btn" style="margin-top:20px" onclick="document.getElementById('payment-overlay').classList.remove('active')">Close</button>
+    function showOrderSent(shipping, total) {
+      document.getElementById('order-status').innerHTML = `
+        <div class="order-sent">
+          <div class="icon">📩</div>
+          <h3>Order Request Sent</h3>
+          <p>
+            Your order for <strong>${quantity}× ${product.name}</strong> has been sent to the merchant.
+            They'll respond with a Lightning invoice. Check back here or look for a DM on Nostr.
+          </p>
+          <p style="margin-top:12px;font-size:0.8em;color:var(--text-dim)">
+            Total: ${isSats() ? formatSats(total) : total + ' ' + getCurrency()} · Shipping to ${shipping.city}, ${shipping.country}
+          </p>
         </div>
       `;
+
+      document.getElementById('order-btn').style.display = 'none';
     }
 
-    function copyInvoice() {
-      const text = document.querySelector('.invoice-text').textContent;
-      navigator.clipboard.writeText(text).then(() => {
+    function copyInvoice(invoice) {
+      navigator.clipboard.writeText(invoice).then(() => {
         document.querySelector('.copy-btn').textContent = '✅ Copied!';
         setTimeout(() => document.querySelector('.copy-btn').textContent = '📋 Copy Invoice', 2000);
       });
     }
 
-    // Init
-    updateSummary();
+    // Start
+    if (productId && merchantPubkey) {
+      fetchProduct();
+    }
   </script>
 </body>
 </html>
