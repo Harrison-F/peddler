@@ -1,0 +1,13 @@
+{
+  "name": "peddler",
+  "version": "0.1.0",
+  "description": "Agent-native Bitcoin commerce on Nostr. Publish storefronts to relays, accept Lightning payments, no platform required.",
+  "main": "server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js",
+    "publish-store": "node publish-store.mjs"
+  },
+  "keywords": ["nostr", "bitcoin", "lightning", "commerce", "nip-15", "nip-99", "agent"],
+  "license": "MIT"
+}
